@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Growth Path - 당신의 궤도</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1729 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* 별 배경 */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* 컨테이너 */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* 결과 카드 */
+        .result-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 50px 30px;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        /* 궤도 아이콘 */
+        .orbit-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .orbit-icon.explorer {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4);
+        }
+
+        .orbit-icon.maker {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            box-shadow: 0 20px 60px rgba(245, 87, 108, 0.4);
+        }
+
+        .orbit-icon.navigator {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            box-shadow: 0 20px 60px rgba(79, 172, 254, 0.4);
+        }
+
+        /* 궤도 배지 */
+        .orbit-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .orbit-badge.explorer {
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+
+        .orbit-badge.maker {
+            background: rgba(245, 87, 108, 0.2);
+            color: #f5576c;
+            border: 1px solid rgba(245, 87, 108, 0.3);
+        }
+
+        .orbit-badge.navigator {
+            background: rgba(79, 172, 254, 0.2);
+            color: #4facfe;
+            border: 1px solid rgba(79, 172, 254, 0.3);
+        }
+
+        /* 제목 */
+        .result-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        /* 설명 */
+        .result-description {
+            font-size: 1.1rem;
+            color: #a8b2d1;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        /* 키워드 */
+        .keywords {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .keyword {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #e0e6f0;
+        }
+
+        /* 구분선 */
+        .divider {
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            margin: 40px auto;
+            border-radius: 2px;
+        }
+
+        /* 추천 세미나 섹션 */
+        .seminar-section {
+            margin-top: 40px;
+        }
+
+        .seminar-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .seminar-list {
+            list-style: none;
+        }
+
+        .seminar-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .seminar-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(5px);
+        }
+
+        .seminar-rank {
+            display: inline-block;
+            font-size: 1.2rem;
+            margin-right: 10px;
+        }
+
+        .seminar-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .seminar-desc {
+            font-size: 0.9rem;
+            color: #a8b2d1;
+            margin-top: 8px;
+        }
+
+        /* 버튼 */
+        .action-buttons {
+            margin-top: 40px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* 공유 섹션 */
+        .share-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .share-section p {
+            color: #a8b2d1;
+            margin-bottom: 15px;
+        }
+
+        /* 애니메이션 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .result-title {
+                font-size: 1.5rem;
+            }
+            
+            .result-description {
+                font-size: 1rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 별 배경 -->
+    <div class="stars" id="stars"></div>
+
+    <div class="container">
+        <div class="result-card">
+            <!-- 궤도 아이콘 -->
+            <div class="orbit-icon" id="orbitIcon">✨</div>
+
+            <!-- 궤도 배지 -->
+            <div style="text-align: center;">
+                <div class="orbit-badge" id="orbitBadge">Explorer Orbit</div>
+            </div>
+
+            <!-- 결과 제목 -->
+            <h1 class="result-title" style="text-align: center;" id="resultTitle">
+                당신은 탐험가예요!
+            </h1>
+
+            <!-- 결과 설명 -->
+            <p class="result-description" style="text-align: center;" id="resultDescription">
+                AI가 뭔지 궁금하고, 새로운 세계를 탐험 중이에요
+            </p>
+
+            <!-- 키워드 -->
+            <div class="keywords" id="keywords"></div>
+
+            <div class="divider"></div>
+
+            <!-- 추천 세미나 -->
+            <div class="seminar-section">
+                <h3>🎯 당신을 위한 추천 세미나</h3>
+                <ul class="seminar-list" id="seminarList"></ul>
+            </div>
+
+            <!-- 공유 섹션 -->
+            <div class="share-section">
+                <p>당신의 별이 AI Universe를 완성합니다 ✨</p>
+            </div>
+
+            <!-- 액션 버튼 -->
+            <div class="action-buttons">
+                <a href="test-form-final.html" class="btn btn-secondary">
+                    다시 하기
+                </a>
+                <a href="#" class="btn btn-primary" id="alertBtn">
+                    세미나 알림 신청
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 별 생성
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+        createStars();
+
+        // 궤도별 데이터
+        const orbitData = {
+            explorer: {
+                icon: '🌟',
+                badge: 'Explorer Orbit',
+                title: '당신은 탐험가예요!',
+                description: 'AI가 뭔지 궁금하고, 새로운 세계를 탐험 중이에요.<br>아직은 낯설지만 "이거 신기한데?" 하면서 하나씩 찾아보고 시도하는 중이죠.<br>ChatGPT를 처음 써보거나, AI 뉴스를 관심있게 보거나,<br>"나도 한 번 써볼까?" 하는 그 마음이 바로 탐험의 시작입니다.<br>호기심으로 시작하는 이 순간이 가장 중요합니다.<br>모든 여정은 이렇게 시작됩니다!',
+                keywords: ['호기심', '탐색', '시작'],
+                seminars: [
+                    {
+                        rank: '🥇',
+                        name: 'Walk with AI',
+                        desc: '지금 직무별로 가장 핫한 최신 AI 툴 직접 체험하기!'
+                    },
+                    {
+                        rank: '🥈',
+                        name: '모두팝',
+                        desc: '산업·기술별 AI 트렌드를 빠르고 가볍게 접하는 웨비나!'
+                    },
+                    {
+                        rank: '🥉',
+                        name: '모두해유',
+                        desc: 'AI 실무 사례 공유하며 배우기'
+                    }
+                ]
+            },
+            maker: {
+                icon: '⚡',
+                badge: 'Maker Orbit',
+                title: '당신은 실천가예요!',
+                description: 'AI를 내 일에 활용하며, 실질적인 가치를 만들어가요.<br>"이거 AI로 더 빨리 못 할까?" 하면서<br>업무에 바로 적용하고 효율을 높이는 방법을 찾고 계시죠.<br>ChatGPT로 보고서를 작성하거나, 업무를 자동화하거나,<br>더 나은 프롬프트를 고민하는 당신.<br>실무에서 AI의 힘을 직접 체험하며 성장하고 있습니다.<br>이제 한 단계 더 깊이 들어갈 시간이에요!',
+                keywords: ['실용', '적용', '효율'],
+                seminars: [
+                    {
+                        rank: '🥇',
+                        name: 'AI Agent',
+                        desc: 'AI로 업무 혁신을 이뤄낸 각 분야 전문가의 노하우 공개!'
+                    },
+                    {
+                        rank: '🥈',
+                        name: 'AI 플레이그라운드',
+                        desc: '한번쯤 해보고 싶었던 진짜 업무 혁신, 직접 만들며 실력 향상!'
+                    },
+                    {
+                        rank: '🥉',
+                        name: '모두해유',
+                        desc: '지역 기업과 함께 성장하기'
+                    }
+                ]
+            },
+            navigator: {
+                icon: '🚀',
+                badge: 'Navigator Orbit',
+                title: '당신은 선도자예요!',
+                description: 'AI의 가능성을 보고, 새로운 방향을 제시해요.<br>개인을 넘어 팀과 조직의 변화를 고민하고<br>AI를 전략적으로 활용하는 방법을 찾고 계시죠.<br>"우리 팀에 어떻게 도입할까?" "조직 문화를 어떻게 바꿀까?"<br>이런 질문을 던지며 더 큰 그림을 그리는 당신.<br>AI 시대의 전환을 이끄는 선도자로서<br>조직과 산업의 미래를 만들어가고 있습니다.',
+                keywords: ['전략', '비전', '리더십'],
+                seminars: [
+                    {
+                        rank: '🥇',
+                        name: '리더 전략 과정',
+                        desc: '조직의 문제를 진단하고, 즉시 실행 가능한 AI 혁신 전략 도출!'
+                    },
+                    {
+                        rank: '🥈',
+                        name: 'HR 세미나',
+                        desc: '반복되는 조직관리 업무는 AI로 자동화하고, 사람은 전략에 집중!'
+                    },
+                    {
+                        rank: '🥉',
+                        name: 'THE 성장해유',
+                        desc: '조직의 AX 전환을 위한 리더의 AI 활용 역량 강화!'
+                    }
+                ]
+            }
+        };
+
+        // URL에서 궤도 정보 가져오기
+        const urlParams = new URLSearchParams(window.location.search);
+        const orbit = urlParams.get('orbit') || 'explorer';
+        const data = orbitData[orbit];
+
+        // 화면에 데이터 표시
+        document.getElementById('orbitIcon').textContent = data.icon;
+        document.getElementById('orbitIcon').className = 'orbit-icon ' + orbit;
+        
+        document.getElementById('orbitBadge').textContent = data.badge;
+        document.getElementById('orbitBadge').className = 'orbit-badge ' + orbit;
+        
+        document.getElementById('resultTitle').textContent = data.title;
+        document.getElementById('resultDescription').innerHTML = data.description;
+
+        // 키워드 표시
+        const keywordsContainer = document.getElementById('keywords');
+        keywordsContainer.innerHTML = '';
+        data.keywords.forEach(keyword => {
+            const span = document.createElement('span');
+            span.className = 'keyword';
+            span.textContent = keyword;
+            keywordsContainer.appendChild(span);
+        });
+
+        // 세미나 리스트 표시
+        const seminarList = document.getElementById('seminarList');
+        seminarList.innerHTML = '';
+        data.seminars.forEach(seminar => {
+            const li = document.createElement('li');
+            li.className = 'seminar-item';
+            li.innerHTML = `
+                <div>
+                    <span class="seminar-rank">${seminar.rank}</span>
+                    <span class="seminar-name">${seminar.name}</span>
+                </div>
+                <div class="seminar-desc">${seminar.desc}</div>
+            `;
+            seminarList.appendChild(li);
+        });
+
+        // 세미나 알림 신청 버튼
+        document.getElementById('alertBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('세미나 알림 신청 페이지로 이동합니다.\n(실제 링크를 연결해주세요)');
+            // 실제로는: window.location.href = '세미나알림신청URL';
+        });
+    </script>
+</body>
+</html>
